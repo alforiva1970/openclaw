@@ -1,0 +1,14 @@
+services:
+  openclaw-gateway:
+    # Restringiamo l'accesso alla rete (Temporaneamente rimosso per debug)
+    environment:
+      - OPENCLAW_NO_RESPAWN=1
+      - OPENCLAW_HEARTBEAT_ENABLED=false
+      - OPENCLAW_DIAGNOSTICS_ENABLED=false
+      - OPENCLAW_SKIP_CHANNELS=true # Non vogliamo inibizioni da canali esterni
+    # Limitiamo le risorse per evitare fork-bombs o attacchi DoS locali
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G

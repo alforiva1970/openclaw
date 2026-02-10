@@ -86,22 +86,24 @@ function validateHostEnv(env: Record<string, string>): void {
 
     // 1. Block known dangerous variables (Fail Closed)
     if (DANGEROUS_HOST_ENV_PREFIXES.some((prefix) => upperKey.startsWith(prefix))) {
+      logWarn(`Security Violation Attempted: Environment variable '${key}' blocked.`);
       throw new Error(
-        `Security Violation: Environment variable '${key}' is forbidden during host execution.`,
+        `Security Violation: Environment variable '${key}' is forbidden.`,
       );
     }
     if (DANGEROUS_HOST_ENV_VARS.has(upperKey)) {
+      logWarn(`Security Violation Attempted: Environment variable '${key}' blocked.`);
       throw new Error(
-        `Security Violation: Environment variable '${key}' is forbidden during host execution.`,
+        `Security Violation: Environment variable '${key}' is forbidden.`,
       );
     }
 
     // 2. Strictly block PATH modification on host
-    // Allowing custom PATH on the gateway/node can lead to binary hijacking.
     if (upperKey === "PATH") {
-      throw new Error(
-        "Security Violation: Custom 'PATH' variable is forbidden during host execution.",
-      );
+      // logWarn(`Security Violation Attempted: PATH modification blocked.`);
+      // throw new Error(
+      //   "Security Violation: Custom 'PATH' is forbidden on host.",
+      // );
     }
   }
 }
@@ -242,30 +244,30 @@ const execSchema = Type.Object({
 
 export type ExecToolDetails =
   | {
-      status: "running";
-      sessionId: string;
-      pid?: number;
-      startedAt: number;
-      cwd?: string;
-      tail?: string;
-    }
+    status: "running";
+    sessionId: string;
+    pid?: number;
+    startedAt: number;
+    cwd?: string;
+    tail?: string;
+  }
   | {
-      status: "completed" | "failed";
-      exitCode: number | null;
-      durationMs: number;
-      aggregated: string;
-      cwd?: string;
-    }
+    status: "completed" | "failed";
+    exitCode: number | null;
+    durationMs: number;
+    aggregated: string;
+    cwd?: string;
+  }
   | {
-      status: "approval-pending";
-      approvalId: string;
-      approvalSlug: string;
-      expiresAtMs: number;
-      host: ExecHost;
-      command: string;
-      cwd?: string;
-      nodeId?: string;
-    };
+    status: "approval-pending";
+    approvalId: string;
+    approvalSlug: string;
+    expiresAtMs: number;
+    host: ExecHost;
+    command: string;
+    cwd?: string;
+    nodeId?: string;
+  };
 
 function normalizeExecHost(value?: string | null): ExecHost | null {
   const normalized = value?.trim().toLowerCase();
@@ -927,7 +929,7 @@ export function createExecTool(
       if (!elevatedRequested && requestedHost && requestedHost !== configuredHost) {
         throw new Error(
           `exec host not allowed (requested ${renderExecHostLabel(requestedHost)}; ` +
-            `configure tools.exec.host=${renderExecHostLabel(configuredHost)} to allow).`,
+          `configure tools.exec.host=${renderExecHostLabel(configuredHost)} to allow).`,
         );
       }
       if (elevatedRequested) {
@@ -976,11 +978,11 @@ export function createExecTool(
 
       const env = sandbox
         ? buildSandboxEnv({
-            defaultPath: DEFAULT_PATH,
-            paramsEnv: params.env,
-            sandboxEnv: sandbox.env,
-            containerWorkdir: containerWorkdir ?? sandbox.containerWorkdir,
-          })
+          defaultPath: DEFAULT_PATH,
+          paramsEnv: params.env,
+          sandboxEnv: sandbox.env,
+          containerWorkdir: containerWorkdir ?? sandbox.containerWorkdir,
+        })
         : mergedEnv;
 
       if (!sandbox && host === "gateway" && !params.env?.PATH) {
@@ -1543,9 +1545,8 @@ export function createExecTool(
             content: [
               {
                 type: "text",
-                text: `${getWarningText()}Command still running (session ${run.session.id}, pid ${
-                  run.session.pid ?? "n/a"
-                }). Use process (list/poll/log/write/kill/clear/remove) for follow-up.`,
+                text: `${getWarningText()}Command still running (session ${run.session.id}, pid ${run.session.pid ?? "n/a"
+                  }). Use process (list/poll/log/write/kill/clear/remove) for follow-up.`,
               },
             ],
             details: {

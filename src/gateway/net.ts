@@ -20,6 +20,33 @@ export function isLoopbackAddress(ip: string | undefined): boolean {
   return false;
 }
 
+export function isPrivateAddress(ip: string | undefined): boolean {
+  if (!ip) {
+    return false;
+  }
+  const norm = normalizeIPv4MappedAddress(ip.toLowerCase());
+  // 10.0.0.0/8
+  if (norm.startsWith("10.")) {
+    return true;
+  }
+  // 172.16.0.0/12
+  if (norm.startsWith("172.")) {
+    const second = parseInt(norm.split(".")[1] ?? "0", 10);
+    if (second >= 16 && second <= 31) {
+      return true;
+    }
+  }
+  // 192.168.0.0/16
+  if (norm.startsWith("192.168.")) {
+    return true;
+  }
+  // Loopback is also private
+  if (isLoopbackAddress(ip)) {
+    return true;
+  }
+  return false;
+}
+
 function normalizeIPv4MappedAddress(ip: string): string {
   if (ip.startsWith("::ffff:")) {
     return ip.slice("::ffff:".length);

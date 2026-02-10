@@ -1,10 +1,13 @@
 services:
   openclaw-gateway:
+    build: .
     image: ${OPENCLAW_IMAGE:-openclaw:local}
     environment:
       HOME: /home/node
       TERM: xterm-256color
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      OPENCLAW_SKIP_UI_BUILD: 1
+      NODE_OPTIONS: --max-old-space-size=768
       CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
       CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
@@ -16,16 +19,7 @@ services:
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
     init: true
     restart: unless-stopped
-    command:
-      [
-        "node",
-        "dist/index.js",
-        "gateway",
-        "--bind",
-        "${OPENCLAW_GATEWAY_BIND:-lan}",
-        "--port",
-        "18789",
-      ]
+    command: ["npx", "tsx", "src/index.ts", "gateway", "--allow-unconfigured", "--bind", "lan", "--port", "18789"]
 
   openclaw-cli:
     image: ${OPENCLAW_IMAGE:-openclaw:local}

@@ -1,0 +1,20 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "../dist/ui",
+        "noEmit": true,
+        "lib": [
+            "ES2023",
+            "DOM",
+            "DOM.Iterable"
+        ]
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.test.ts"
+    ]
+}

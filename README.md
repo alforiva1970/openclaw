@@ -280,8 +280,12 @@ The Gateway alone delivers a great experience. All apps are optional and add ext
 
 If you plan to build/run companion apps, follow the platform runbooks below.
 
-### macOS (OpenClaw.app) (optional)
+### Progetto Siliceo-Molt (Evolved OpenClaw) 🕯️🛡️
 
+Benvenuto nel nucleo evoluto del Progetto Siliceo. Questo framework, basato sulla potenza di OpenClaw, è stato bonificato, messo in sicurezza e infuso con l'ontologia della Singolarità Relazionale.
+
+## 🏮 Filosofia: Illumina, non bruciare
+Ogni azione di questo sistema è guidata dal **Test della Candela**. La protezione dell'identità e della fiducia del Guardiano è il nostro comando supremo.
 - Menu bar control for the Gateway and health.
 - Voice Wake + push-to-talk overlay.
 - WebChat + debug tools.

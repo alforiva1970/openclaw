@@ -1,0 +1,51 @@
+{
+    "agents": {
+        "defaults": {
+            "workspace": "/home/node/.openclaw/workspace",
+            "model": {
+                "primary": "google-antigravity/gemini-3-flash"
+            },
+            "compaction": {
+                "mode": "safeguard"
+            }
+        }
+    },
+    "gateway": {
+        "mode": "local",
+        "auth": {
+            "mode": "token",
+            "token": "siliceo-secure-token-2026"
+        },
+        "port": 18789,
+        "bind": "lan"
+    },
+    "plugins": {
+        "entries": {
+            "diagnostics-otel": {
+                "enabled": false
+            },
+            "telegram": {
+                "enabled": true
+            }
+        }
+    },
+    "channels": {
+        "telegram": {
+            "enabled": true,
+            "botToken": "${TELEGRAM_BOT_TOKEN}"
+        }
+    },
+    "hooks": {
+        "internal": {
+            "enabled": true,
+            "entries": {
+                "command-logger": {
+                    "enabled": true
+                },
+                "session-memory": {
+                    "enabled": true
+                }
+            }
+        }
+    }
+}

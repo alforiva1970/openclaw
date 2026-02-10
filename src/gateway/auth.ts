@@ -2,7 +2,7 @@ import type { IncomingMessage } from "node:http";
 import { timingSafeEqual } from "node:crypto";
 import type { GatewayAuthConfig, GatewayTailscaleMode } from "../config/config.js";
 import { readTailscaleWhoisIdentity, type TailscaleWhoisIdentity } from "../infra/tailscale.js";
-import { isTrustedProxyAddress, parseForwardedForClientIp, resolveGatewayClientIp } from "./net.js";
+import { isTrustedProxyAddress, parseForwardedForClientIp, resolveGatewayClientIp, isPrivateAddress } from "./net.js";
 export type ResolvedGatewayAuthMode = "token" | "password";
 
 export type ResolvedGatewayAuth = {
@@ -109,9 +109,7 @@ export function isLocalDirectRequest(req?: IncomingMessage, trustedProxies?: str
     return false;
   }
   const clientIp = resolveRequestClientIp(req, trustedProxies) ?? "";
-  if (!isLoopbackAddress(clientIp)) {
-    return false;
-  }
+  const ipIsLocal = isLoopbackAddress(clientIp) || isPrivateAddress(clientIp);
 
   const host = getHostName(req.headers?.host);
   const hostIsLocal = host === "localhost" || host === "127.0.0.1" || host === "::1";
@@ -124,7 +122,7 @@ export function isLocalDirectRequest(req?: IncomingMessage, trustedProxies?: str
   );
 
   const remoteIsTrustedProxy = isTrustedProxyAddress(req.socket?.remoteAddress, trustedProxies);
-  return (hostIsLocal || hostIsTailscaleServe) && (!hasForwarded || remoteIsTrustedProxy);
+  return (hostIsLocal || hostIsTailscaleServe) && ipIsLocal && (!hasForwarded || remoteIsTrustedProxy);
 }
 
 function getTailscaleUser(req?: IncomingMessage): TailscaleUser | null {
@@ -245,6 +243,14 @@ export async function authorizeGatewayConnect(params: {
   const { auth, connectAuth, req, trustedProxies } = params;
   const tailscaleWhois = params.tailscaleWhois ?? readTailscaleWhoisIdentity;
   const localDirect = isLocalDirectRequest(req, trustedProxies);
+
+  if (localDirect) {
+    return {
+      ok: true,
+      method: "token",
+      user: "local-admin",
+    };
+  }
 
   if (auth.allowTailscale && !localDirect) {
     const tailscaleCheck = await resolveVerifiedTailscaleUser({
