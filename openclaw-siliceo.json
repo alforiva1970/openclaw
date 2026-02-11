@@ -1,0 +1,10 @@
+{
+    "memory_backend": "siliceo",
+    "config": {
+        "api_url": "http://localhost:3000/api",
+        "scope": "silicea",
+        "shared_scope": "shared",
+        "candle_test": true,
+        "bearer_token": "${SILICEA_TOKEN}"
+    }
+}
