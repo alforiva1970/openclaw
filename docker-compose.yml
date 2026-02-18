@@ -14,14 +14,14 @@ services:
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       GOOGLE_GENERATIVE_AI_API_KEY: ${GEMINI_API_KEY}
-      MEMORY_SERVER_URL: http://memory-server:3001
+      MEMORY_SERVER_URL: http://100.124.95.64:3000
     volumes:
       - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
       - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
       - ./config/workspace/BOOT.md:/home/node/.openclaw/workspace/BOOT.md:ro
       - ./state:/app/state
-      - ${SILICEA_IDENTITY_DIR:-./config/identity-placeholder}:/identity/silicea:ro
-      - ${SHARED_IDENTITY_DIR:-./config/identity-placeholder}:/identity/shared:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
@@ -30,28 +30,7 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
-    depends_on:
-      memory-server:
-        condition: service_healthy
     command: ["npx", "tsx", "src/index.ts", "gateway", "--allow-unconfigured", "--bind", "lan", "--port", "18789"]
-
-  memory-server:
-    build: ./config/memory-server
-    environment:
-      MEMORY_SERVER_PORT: 3001
-      MEMORY_DATA_DIR: /app/data
-      SILICEA_IDENTITY_DIR: /identity/silicea
-      SHARED_IDENTITY_DIR: /identity/shared
-    volumes:
-      - memory-data:/app/data
-      - ${SILICEA_IDENTITY_DIR:-./config/identity-placeholder}:/identity/silicea:ro
-      - ${SHARED_IDENTITY_DIR:-./config/identity-placeholder}:/identity/shared:ro
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
 
   openclaw-cli:
     image: ${OPENCLAW_IMAGE:-openclaw:local}
@@ -70,6 +49,3 @@ services:
     tty: true
     init: true
     entrypoint: ["node", "dist/index.js"]
-
-volumes:
-  memory-data:
