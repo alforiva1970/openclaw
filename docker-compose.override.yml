@@ -5,10 +5,10 @@ services:
       - OPENCLAW_NO_RESPAWN=1
       - OPENCLAW_HEARTBEAT_ENABLED=false
       - OPENCLAW_DIAGNOSTICS_ENABLED=false
-      - OPENCLAW_SKIP_CHANNELS=true # Non vogliamo inibizioni da canali esterni
+      - OPENCLAW_SKIP_CHANNELS=false # Abilitiamo i canali per la connessione
     # Limitiamo le risorse per evitare fork-bombs o attacchi DoS locali
     deploy:
       resources:
         limits:
           cpus: '0.50'
-          memory: 1G
+          memory: 4G
