@@ -1,0 +1,12 @@
+{
+    "name": "siliceo-memory-server",
+    "version": "2.0.0",
+    "description": "Namespace-aware memory server for Progetto Siliceo",
+    "main": "memory-server.js",
+    "scripts": {
+        "start": "node memory-server.js"
+    },
+    "dependencies": {
+        "compromise": "^14.14.3"
+    }
+}
