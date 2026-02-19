@@ -5,7 +5,7 @@
   },
   "env": {
     "vars": {
-      "KAGGLE_API_TOKEN": "KGAT_ddfab7ef0805021b2e2343dcaf7e3a7d"
+      "KAGGLE_API_TOKEN": "${KAGGLE_API_TOKEN}"
     }
   },
   "update": {
@@ -140,7 +140,7 @@
       "search": {
         "enabled": true,
         "provider": "brave",
-        "apiKey": "BSA6iVnVWSK5Z-sWnc9_MsT50n7ldHT"
+        "apiKey": "${BRAVE_SEARCH_API_KEY}"
       }
     }
   },
@@ -193,7 +193,7 @@
     "telegram": {
       "enabled": true,
       "dmPolicy": "allowlist",
-      "botToken": "8466389536:AAE9CiIXbvlgvFoR8vK2qc29hZOxjxSpFA8",
+      "botToken": "${TELEGRAM_BOT_TOKEN}",
       "allowFrom": [
         "212705234"
       ],
@@ -207,7 +207,7 @@
     "bind": "auto",
     "auth": {
       "mode": "token",
-      "token": "siliceo-secure-token-2026"
+      "token": "${GATEWAY_AUTH_TOKEN}"
     }
   },
   "plugins": {

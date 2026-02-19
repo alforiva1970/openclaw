@@ -71,3 +71,9 @@ USER.md
 
 # local tooling
 .serena/
+
+# Secrets & runtime state (never commit)
+auth-profiles.json
+state/
+*.bak
+*.bak.*
