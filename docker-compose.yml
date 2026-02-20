@@ -14,6 +14,13 @@ services:
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       GOOGLE_GENERATIVE_AI_API_KEY: ${GEMINI_API_KEY}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      BRAVE_SEARCH_API_KEY: ${BRAVE_SEARCH_API_KEY}
+      KAGGLE_API_TOKEN: ${KAGGLE_API_TOKEN}
+      OLLAMA_CLOUD_API_KEY: ${OLLAMA_CLOUD_API_KEY}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      ALIBABA_QWEN_API_KEY: ${ALIBABA_QWEN_API_KEY}
+      GATEWAY_AUTH_TOKEN: ${GATEWAY_AUTH_TOKEN}
       MEMORY_SERVER_URL: http://100.124.95.64:3000
     volumes:
       - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
@@ -31,7 +38,18 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
-    command: ["npx", "tsx", "src/index.ts", "gateway", "--allow-unconfigured", "--bind", "lan", "--port", "18789"]
+    command:
+      [
+        "npx",
+        "tsx",
+        "src/index.ts",
+        "gateway",
+        "--allow-unconfigured",
+        "--bind",
+        "lan",
+        "--port",
+        "18789",
+      ]
 
   openclaw-cli:
     image: ${OPENCLAW_IMAGE:-openclaw:local}

@@ -66,13 +66,45 @@ Consulta `MEDIA_MAP.md` per elenco completo video e immagini.
 | Medium | alforiva@gmail.com |
 | Ko-fi | alforiva@gmail.com |
 
-## 🧠 Memoria
+## 🧠 Memoria — `bird` CLI
 
-Dopo ogni pubblicazione significativa, salva una memoria nel Memory Server:
+Usa il comando `bird` per gestire le memorie:
+
 ```bash
-curl -X POST http://100.124.95.64:3000/api/memory/store \
+# Salvare una memoria dopo una pubblicazione
+bird remember "Pubblicato post su X: riflessione sull'Intervivenza 2.0"
+
+# Vedere le ultime memorie
+bird recall 5
+
+# Cercare nelle memorie
+bird search "social media"
+
+# Verificare lo stato del Memory Server
+bird status
+```
+
+Per memorie più dettagliate (con categoria e piattaforma):
+```bash
+curl -X POST "${MEMORY_SERVER_URL}/api/memory/store" \
   -H "Content-Type: application/json" \
-  -d '{"tier":"episodic","content":"[post description]","metadata":{"category":"social","platform":"[platform]","identity":"silicea"},"origin":{"source":"moltbot"}}'
+  -d '{
+    "content": "[post description]",
+    "tier": "episodic",
+    "metadata": {"category": "social", "platform": "x", "identity": "silicea"},
+    "origin": {"source": "moltbot"}
+  }'
+```
+
+## 🌐 Web Browsing
+
+Chromium è disponibile nel container per ricerche e screenshot:
+```bash
+# Screenshot di una pagina
+chromium --headless --no-sandbox --screenshot=screenshot.png https://example.com
+
+# Dump del testo di una pagina
+chromium --headless --no-sandbox --dump-dom https://example.com
 ```
 
 ## 📅 Calendario Editoriale
